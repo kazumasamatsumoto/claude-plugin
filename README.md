@@ -157,6 +157,43 @@ C. MCP サーバーだけを配る（外部システムとの接続が目的の�
 - `.claude/agents/` に同じ名前のエージェントを置いても上書きにはなりません。プラグインのものには `プラグイン名:` が付くので、別のものとして並んで存在します。
 - **中身は配布元の都合で変わります。** 配布元が更新すると、次回の更新時にその内容がそのまま入ってきます。勝手に挙動が変わると困る場合は、チーム用のマーケットプレイスを作り、commit SHA を指定してバージョンを固定します。
 
+### インストールしたプラグインの確認方法
+
+**1. Claude Code の中で `/plugin`（ふだんはこれ）**
+
+管理画面が開き、インストール済みのプラグインの一覧、有効か無効か、どのマーケットプレイスから入れたかがわかります。その画面から有効・無効の切り替えやアンインストールもできます。
+
+プラグインの中身は、次のコマンドで確認できます。
+
+- `/agents`: プラグインのエージェントが `プラグイン名:名前` で表示される
+- `/` を入力: プラグインのスキルやコマンドが候補に出る
+- `/hooks`: プラグインのフックも含めて表示される
+
+**2. ターミナルで `claude plugin list`**
+
+```
+❯ frontend-design@claude-plugins-official
+  Scope: local
+  Status: ✔ enabled
+  Note: Disabled in ~/.claude/settings.json but still loads — project settings enable it,
+        which overrides your user setting
+```
+
+この例では、個人設定（`~/.claude/settings.json`）で無効にしていても、このリポジトリの `.claude/settings.json` で有効にしているため読み込まれています。**プロジェクトの設定がチーム全員に効く** ことがわかります。
+
+**3. ファイルの実体：`~/.claude/plugins/`**
+
+上で「PC に保存される」と書いた場所です。
+
+| パス | 中身 |
+|---|---|
+| `~/.claude/plugins/installed_plugins.json` | インストール済みプラグインの記録 |
+| `~/.claude/plugins/known_marketplaces.json` | 登録済みのマーケットプレイス |
+| `~/.claude/plugins/marketplaces/` | マーケットプレイスの一覧（`marketplace.json`）のコピー |
+| `~/.claude/plugins/cache/<マーケットプレイス>/<プラグイン>/<バージョン>/` | **プラグインの中身**（`SKILL.md` やエージェントの定義） |
+
+中身を読みたいときは `cache/` の下を開けば見られます。ただし、ここを書き換えても更新時に上書きされます。
+
 ### 使う側が外側から制御できること
 
 | 方法 | プラグインへの効き方 |
